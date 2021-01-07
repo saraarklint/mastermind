@@ -46,15 +46,6 @@ def calculate_key(code, guess):
             continue
     return black, white
 
-# # Testing calculate_key 100 times:
-# for i in range(100):
-#     code = make_code(4,6)            
-#     guess = make_code(4,6)
-#     print("{} (code)\n{} (guess)".format(code, guess))
-#     print("Black pegs: {}\nWhite pegs: {}\n".format(*calculate_key(code,guess)))
-        
-
-
 
 # Posssible keys ("replies")
 def make_possible_keys(pegs=4, colors=6):
@@ -66,7 +57,6 @@ def make_possible_keys(pegs=4, colors=6):
     return possible_keys
 
 
-#print(make_possible_keys())
 
 # Full sample space (i.e., what the hidden code may be at beginning of game)
 def make_full_samplespace(pegs=4, colors=6):
@@ -86,19 +76,6 @@ def make_full_samplespace(pegs=4, colors=6):
                 samplespace.append(code + [color])
     return samplespace
     
-# print(len(make_full_samplespace()))
-
-# For testing:
-# samplespace = make_full_samplespace()
-
-# # check that we haven't made dublicates:
-# for code in samplespace:
-#     if samplespace.count(code) > 1:
-#         print(code)
-
-# # check that the result looks right:        
-# print(samplespace)
-# print(len(samplespace))
 
 # For determining the best guess (using Knuth's algorithm)
 # The function that for a given guess calculates the maximal error (i.e., size 
@@ -115,13 +92,13 @@ def maximal_error(guess, samplespace, possible_keys):
         maximum = max(maximum, partitioning[key])
     return maximum
 
-# print(maximal_error(make_code(),samplespace, make_possible_keys()))
+
 
 # The function that returns the best guess given a current samplespace
 # using Knuth's algorithm
 def best_guess(samplespace, full_samplespace, possible_keys):
     if len(samplespace) < 3:
-        return samplespace[0]
+        return samplespace[0], None
     else:
         result = []
         max_error = float('inf')
@@ -132,20 +109,17 @@ def best_guess(samplespace, full_samplespace, possible_keys):
                 result = guess
             elif error == max_error and guess in samplespace and result not in samplespace:
                 result = guess
-        return result
+        return result, max_error
     
-# print(best_guess(samplespace, samplespace, make_possible_keys()))
+
 
 # Updating a samplespace given a guess and the resulting key:
 def update_samplespace(samplespace, guess, key):
     return [code for code in samplespace if calculate_key(code, guess) == key]
 
-# print(update_samplespace(samplespace, make_code(), (3,0)))
+
 
 def computer_as_codebreaker(hidden_code, first_guess, full_samplespace, possible_keys, pegs=4, colors=6):
-    # full_samplespace = make_full_samplespace(pegs, colors)
-    # possible_keys = make_possible_keys(pegs, colors)
-    # hidden_code = make_code(pegs, colors)
     counter = 1
     guess = first_guess
     key = calculate_key(hidden_code, guess) # the code maker's reply
@@ -154,7 +128,7 @@ def computer_as_codebreaker(hidden_code, first_guess, full_samplespace, possible
     while black < pegs:
         # print("Guess: {}\tKey: {}".format(guess, key))
         counter += 1
-        guess = best_guess(samplespace, full_samplespace, possible_keys) # the code breaker's guess
+        guess = best_guess(samplespace, full_samplespace, possible_keys)[0] # the code breaker's guess
         key = calculate_key(hidden_code, guess) # the code maker's reply
         black = key[0]
         samplespace = update_samplespace(samplespace, guess, key) # the code breaker's new possibilites
@@ -168,13 +142,12 @@ def computer_as_codebreaker(hidden_code, first_guess, full_samplespace, possible
 def test_game_randomized(tests, pegs=4, colors=6):
     full_samplespace = make_full_samplespace(pegs, colors)
     possible_keys = make_possible_keys(pegs, colors)
-    first_guess = best_guess(full_samplespace, full_samplespace, possible_keys)
+    first_guess = best_guess(full_samplespace, full_samplespace, possible_keys)[0]
     maximum = 0
     minimum = float('inf')
     sum = 0
     for i in range(tests):
         times = computer_as_codebreaker(make_code(pegs, colors), first_guess, full_samplespace, possible_keys, pegs, colors)
-        print("Pegs: {}, Colors: {}, Runtime (in seconds): {}".format(pegs, colors, time.time()-starttime))
         sum += times
         if times > maximum:
             maximum = times
@@ -187,13 +160,13 @@ def test_game_randomized(tests, pegs=4, colors=6):
 def find_maximum_number_of_guesses(pegs=4, colors=6):
     full_samplespace = make_full_samplespace(pegs, colors)
     possible_keys = make_possible_keys(pegs, colors)
-    first_guess = best_guess(full_samplespace, full_samplespace, possible_keys)
+    first_guess, max_error = best_guess(full_samplespace, full_samplespace, possible_keys)
     maximum = 0
     for code in full_samplespace:
         times = computer_as_codebreaker(code, first_guess, full_samplespace, possible_keys, pegs, colors)
         if times > maximum:
             maximum = times
-    return maximum
+    return maximum, first_guess, max_error, len(full_samplespace), len(possible_keys)
 
 
 if __name__ == '__main__': # so that it won't be executed when functions are imported in mami_playgame
@@ -204,30 +177,21 @@ if __name__ == '__main__': # so that it won't be executed when functions are imp
     #             if pegs == 4 and colors == 6:
     #                 break
     #             else:
-    #                 output_file.writelines("GAME\n{}\n{}\n{}\n".format(pegs, colors, find_maximum_number_of_guesses(pegs,colors)))
+    #                 output_file.writelines("{};{};{};{};{};{};{}\n".format(pegs,colors,*find_maximum_number_of_guesses(pegs,colors)))
     #                 print("Pegs: {}, Colors: {}, Runtime (in seconds): {}".format(pegs, colors, time.time()-starttime))
 
-    for pegs in range(2,5,1):
-        for colors in range(2,7,1):
-            print("Pegs: {}\tColors: {}\tMaximum: {}\tMinimum: {}\tAverage: {}".format(pegs,colors,*test_game_randomized(100,pegs,colors)))
+
+    # for pegs in range(2,5,1):
+    #     for colors in range(2,7,1):
+    #         print("Pegs: {}\tColors: {}\tMaximum: {}\tMinimum: {}\tAverage: {}".format(pegs,colors,*test_game_randomized(100,pegs,colors)))
     
     
     # Make table of result in output file for md file:
     # with open('mami_table.txt', 'w') as table_file:
-    #     table_file.writelines("Pegs|Colors|Maximum\n---:|---:|---:")
+    #     table_file.writelines("Pegs|Colors|Maximum|Initial guess|Max error|Possibilites|Keys\n---:|---:|---:|--:|--:|--:|--:\n")
     #     with open('mami_output.txt', 'r') as output_file:
-    #         counter = 0
     #         for line in output_file.readlines():
-    #             if line == "GAME\n":
-    #                 table_file.writelines("\n")
-    #             else:
-    #                 counter += 1
-    #                 table_file.writelines(line[:-1])
-    #                 if counter % 3 == 0:
-    #                     continue # table_file.writelines("\n")
-    #                 else:
-    #                     table_file.writelines("|")
-                    
-            
+    #             table_file.writelines("{}|{}|{}|{}|{}|{}|{}\n".format(*line.strip('\n').split(";")))                    
+    
     print("Runtime (in seconds): {}".format(time.time()-starttime))
     
