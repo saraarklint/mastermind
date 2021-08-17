@@ -1,14 +1,1 @@
-2;2;3;[0, 0];2;4;5
-2;3;4;[0, 0];4;9;5
-2;4;4;[0, 1];6;16;5
-2;5;5;[0, 1];9;25;5
-2;6;5;[0, 1];16;36;5
-3;2;4;[0, 0, 0];3;8;9
-3;3;4;[0, 0, 1];6;27;9
-3;4;4;[0, 1, 2];15;64;9
-3;5;5;[0, 1, 2];30;125;9
-3;6;5;[0, 1, 2];63;216;9
-4;2;4;[0, 0, 0, 1];4;16;14
-4;3;4;[0, 0, 0, 1];15;81;14
-4;4;4;[0, 0, 1, 2];46;256;14
-4;5;5;[0, 0, 1, 1];120;625;14
+[{"Possible codes": 4, "Valid keys": 5, "Initial guess": [0, 0], "Max error": 2, "Guesses": 3, "Pegs": 2, "Colors": 2, "Lower bound": 3, "Knuth ok": true}, {"Possible codes": 9, "Valid keys": 5, "Initial guess": [0, 0], "Max error": 4, "Guesses": 4, "Pegs": 2, "Colors": 3, "Lower bound": 3, "Knuth ok": false}, {"Possible codes": 16, "Valid keys": 5, "Initial guess": [0, 1], "Max error": 6, "Guesses": 4, "Pegs": 2, "Colors": 4, "Lower bound": 4, "Knuth ok": true}, {"Possible codes": 25, "Valid keys": 5, "Initial guess": [0, 1], "Max error": 9, "Guesses": 5, "Pegs": 2, "Colors": 5, "Lower bound": 4, "Knuth ok": false}, {"Possible codes": 36, "Valid keys": 5, "Initial guess": [0, 1], "Max error": 16, "Guesses": 5, "Pegs": 2, "Colors": 6, "Lower bound": 4, "Knuth ok": false}, {"Possible codes": 8, "Valid keys": 9, "Initial guess": [0, 0, 0], "Max error": 3, "Guesses": 4, "Pegs": 3, "Colors": 2, "Lower bound": 3, "Knuth ok": false}, {"Possible codes": 27, "Valid keys": 9, "Initial guess": [0, 0, 1], "Max error": 6, "Guesses": 4, "Pegs": 3, "Colors": 3, "Lower bound": 3, "Knuth ok": false}, {"Possible codes": 64, "Valid keys": 9, "Initial guess": [0, 1, 2], "Max error": 15, "Guesses": 4, "Pegs": 3, "Colors": 4, "Lower bound": 4, "Knuth ok": true}, {"Possible codes": 125, "Valid keys": 9, "Initial guess": [0, 1, 2], "Max error": 30, "Guesses": 5, "Pegs": 3, "Colors": 5, "Lower bound": 4, "Knuth ok": false}, {"Possible codes": 216, "Valid keys": 9, "Initial guess": [0, 1, 2], "Max error": 63, "Guesses": 5, "Pegs": 3, "Colors": 6, "Lower bound": 4, "Knuth ok": false}, {"Possible codes": 16, "Valid keys": 14, "Initial guess": [0, 0, 0, 1], "Max error": 4, "Guesses": 4, "Pegs": 4, "Colors": 2, "Lower bound": 3, "Knuth ok": false}, {"Possible codes": 81, "Valid keys": 14, "Initial guess": [0, 0, 0, 1], "Max error": 15, "Guesses": 4, "Pegs": 4, "Colors": 3, "Lower bound": 4, "Knuth ok": true}, {"Possible codes": 256, "Valid keys": 14, "Initial guess": [0, 0, 1, 2], "Max error": 46, "Guesses": 4, "Pegs": 4, "Colors": 4, "Lower bound": 4, "Knuth ok": true}, {"Possible codes": 625, "Valid keys": 14, "Initial guess": [0, 0, 1, 1], "Max error": 120, "Guesses": 5, "Pegs": 4, "Colors": 5, "Lower bound": 4, "Knuth ok": false}, {"Possible codes": 1296, "Valid keys": 14, "Initial guess": [0, 0, 1, 1], "Max error": 256, "Guesses": 5, "Pegs": 4, "Colors": 6, "Lower bound": 5, "Knuth ok": true}]
