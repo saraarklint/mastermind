@@ -13,7 +13,7 @@ A question then is whether Knuth's algorithm is optimal for other game dimension
 ## Don't know Mastermind?
 In the standard game of 4 pegs and 6 colors, the game goes as follows:
 
-1. The *codemaker* chooses a *hidden code* consisting of 4 pegs in order and of colors among the 6 colors (so there's $4^6 = 1296$ possibilities).
+1. The *codemaker* chooses a *hidden code* consisting of 4 pegs in order and of colors among the 6 colors (so there's $6^4 = 1296$ possibilities).
 2. Then the *codebreaker* makes a *guess*, which is also 4 pegs in order and of colors among the 6 different colors.
 3. The codemaker then replies with a *key*. See below for details on how the key is calculated from the hidden code and the guess.
 4. 2.-3. continues until the codebreaker guesses the hidden code by using the information obtained from the received keys (and by guessing).
@@ -35,6 +35,20 @@ Note that the key consisting of 3 black key pegs and 1 white key peg is invalid.
 * Key: 
     * 1 black key peg (1 for green in position 4)
     * 2 white key pegs (1 for blue in position *either* 1 or 2, plus 1 for red in position 3)
+
+## Much faster implementation using NumPy
+I've made two implementations of Knuth's algorithm, one using lists (which is `mami.py`) and a more recent one using NumPy ndarrays (which is `vectorizing.py`). The one in `mami.py` takes 16 minutes to run through all 1296 possible games in the standard game, while the one in `vectozing.py` does the same in 1 minute thanks to broadcasting (and by avoiding doing the same key calculation more than once).
+
+The implementation using lists is rather intuitive, while the one using ndarrays relies on the following observations.
+
+In a game with `colors` colors and `pegs` pegs, a code (hidden code or guess) is one-hot encoded as an ndarray of shape `(colors, pegs)`. The essential observations are then the following for 2 codes represented by ndarrays `X` and `Y`:
+
+* `np.sum(X*Y)` gives the number of black pegs in the key calculated from `X` and `Y`,
+* `np.sum(X, axis=1)` gives the number of pegs of each color for `X`,
+* `np.sum(np.minimum(np.sum(X, axis=1), np.sum(Y, axis=1)))` gives the number of black and white pegs in the key calculated from `Y`.
+
+I'll add more details on this implementation later. 
+
     
 ## Number of valid keys in generalized Mastermind
 In a general game with $p$ pegs (and any non-trivial number of colors), the number of valid keys is $(p+1)(p+2)/2 - 1$, so 14 for the standard game.
@@ -92,7 +106,9 @@ The crude analysis above tells us that any strategy requires at least $N$ guesse
 This does not that tell us that Knuth's algorithm isn't optimal in dimensions where it uses more than $N$ guesses. It just tells us that in those dimensions, it might not be optimal.
 
 
-### Notes and comments on my implementation of Knuth's algorithm
+### Notes and comments on my first implementation of Knuth's algorithm
+The first implementation `mami.py` uses lists to represent codes (hidden codes and guesses).
+
 * The function `calculate_key` implements $\kappa$ specified above: it returns the *key* (number of black and white key pegs) given a *hidden code* and a *guess*. For debugging and for the fun of it, I've turned it into a game
 where you play generalized Mastermind as codebreaker against the computer (with a randomized
 hidden code). Run `mami_playgame.py` to play it.
@@ -107,7 +123,6 @@ Knuth's algorithm in this case uses a maximum of 5 guesses.
 
 My implementation is fast enough for playing against the computer, but way too slow when running `computer_as_codebreaker` for all possible hidden codes (almost 16 minutes for the standard game of 4 pegs and 6 colors (though I swear it was 2 minutes a couple of months ago), and 2 minutes in total for all the smaller games).
 The initial implementation was made to be correct and not made to be fast, so this isn't really surprising.
-I have some ideas on speeding things up by translating the calculation of keys into basic NumPy array calculations (by one-hot encoding suitably), and by avoiding doing the same key calculation more than once (unlike now!).
 
 ## Investigating smaller game sizes
 The table below describes the result of testing Knuth's algorithm on all possible hidden codes in smaller dimensions, i.e., $p\leq 4$ and $c\leq 6$. The coarse lower bound $N$ specified above is also included to compare with the number of guesses required by Knuth's algorithm. It's given me an idea for tweaking Knuth's algorithm, and I'll work on that later.

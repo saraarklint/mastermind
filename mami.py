@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 © 2020 Sara Arklint sara@arklint.dk
 
@@ -176,7 +174,7 @@ def test_game_randomized(tests, pegs=4, colors=6):
 
 def find_maximum_number_of_guesses(pegs=4, colors=6):
     """
-    Run through all possible hiden codes and return the maximal number of guesses needed 
+    Run through all possible hidden codes and return the maximal number of guesses needed
     for the code breaker
     Uses Knuth's algorithm
     """

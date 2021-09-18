@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
 © 2020 Sara Arklint sara@arklint.dk
 
